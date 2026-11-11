@@ -1,0 +1,15 @@
+{
+  "title": "The Villages We Choose",
+  "author": "Sandra Keedy",
+  "domain": "https://thevillageswechoose.com",
+  "publicEmail": "hello@sandrakeedy.com",
+  "previewMode": true,
+  "amazonUrl": "https://www.amazon.com/",
+  "amazonPlaceholder": true,
+  "instagramUrl": "https://www.instagram.com/",
+  "instagramPlaceholder": true,
+  "newsletterProvider": "MailerLite",
+  "turnstileSiteKey": "",
+  "defaultLayout": ".",
+  "designDirection": "sandy-ivory"
+}
