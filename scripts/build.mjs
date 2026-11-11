@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {renderSelected} from './render-selected.mjs';
+const config=JSON.parse(fs.readFileSync('content/site.json','utf8'));
+if(!config.previewMode&&(config.amazonPlaceholder||config.instagramPlaceholder||!config.turnstileSiteKey))throw Error('Before enabling live forms, confirm destination links and the public Turnstile site key.');
+renderSelected();
+await import('./render-review-materials.mjs');
+fs.writeFileSync('shared/site-config.js',`window.SITE_CONFIG=${JSON.stringify(config)};\n`);
+const dist='dist';fs.rmSync(dist,{recursive:true,force:true});fs.mkdirSync(dist);
+const pages=['index.html','book.html','about.html','book-club.html','contact.html','privacy.html','excerpt.html','mobile-preview.html','copy-guide.html'];
+for(const file of pages)fs.copyFileSync(file,path.join(dist,file));
+for(const folder of ['assets','shared'])fs.cpSync(folder,path.join(dist,folder),{recursive:true});
+fs.mkdirSync(path.join(dist,'review'));fs.copyFileSync('output/playwright/sandy-index-390.png',path.join(dist,'review/mobile-home.png'));
+fs.writeFileSync(path.join(dist,'robots.txt'),config.previewMode?'User-agent: *\nDisallow: /\n':`User-agent: *\nAllow: /\nSitemap: ${config.domain}/sitemap.xml\n`);
+const urls=pages.filter(p=>!['excerpt.html','mobile-preview.html','copy-guide.html'].includes(p)).map(p=>`<url><loc>${config.domain}/${p==='index.html'?'':p}</loc></url>`).join('');
+fs.writeFileSync(path.join(dist,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`);
+fs.writeFileSync(path.join(dist,'404.html'),'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page not found</title><link rel="stylesheet" href="/assets/sandy-design.css"></head><body><main class="page-heading container"><h1>A different chapter.</h1><p>We couldn’t find that page.</p><a class="scope-button" href="/">Return home</a></main></body></html>');
+console.log('Built the author website into dist.');
