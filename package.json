@@ -1,0 +1,14 @@
+{
+  "name": "the-villages-we-choose-website",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "dev": "node scripts/dev.mjs"
+  }
+}
